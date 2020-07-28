@@ -6,10 +6,19 @@
     </head>
     <body>
         <h1>{{ question.question_text }}</h1>
-        <ul>
+
+        {% if error_message %} <p><strong>{{ error_message }}</strong></p>{% endif %}
+        <!-- Whenever you create a form that alters data server-side, use method="post" -->
+        <form action="{% url 'polls:vote' question.id %}" method="post">
+        <!-- all POST forms that are targeted at internal URLs should use this tag top protect the content -->
+        {% csrf_token %}
+        <!-- display radio button for each question choice, 
+            POST data will send choice=# where # is the ID of the selected choice -->
         {% for choice in question.choice_set.all %}
-            <li>{{ choice.choice_text }}</li>
+            <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}"> 
+            <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br> 
         {% endfor %}
-        </ul>
+            <input type="submit" value="Vote">
+        </form>
     </body>
 </html>
